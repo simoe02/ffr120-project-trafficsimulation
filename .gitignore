@@ -1,0 +1,6 @@
+# Python virtual environments named .venv_xxxx
+.venv_*/
+
+# Python bytecode caches
+__pycache__/
+
