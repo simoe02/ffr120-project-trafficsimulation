@@ -43,7 +43,7 @@ class TrafficVisualizer:
         self.view.addItem(self.road_item)
         self.render_roads()
 
-        self.agent_item = pg.ScatterPlotItem(size=3, brush=pg.mkBrush("red"))
+        self.agent_item = pg.ScatterPlotItem(size=4, brush=pg.mkBrush("red"))
         self.view.addItem(self.agent_item)
 
         # Timer for animation

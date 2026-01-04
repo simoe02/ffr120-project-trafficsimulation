@@ -4,3 +4,7 @@
 # Python bytecode caches
 __pycache__/
 
+# test file
+test.py
+
+.DS_Store

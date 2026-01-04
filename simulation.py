@@ -19,7 +19,8 @@ class TrafficSimulation:
         
         self.network: RoadNetwork = network
         self.router: Router = router
-        self.time: float = 0 # Time in simulation
+        self.total_time: float = 0 # Time in simulation
+        self.time_of_day: float = 0
         self.clock_speed: float = clock_speed
         
         self.vehicles: list[Vehicle] = []
@@ -58,7 +59,8 @@ class TrafficSimulation:
         """
         One simulation step
         """
-        self.time = (self.time + dt * self.clock_speed) % (24 * 3600)
+        self.total_time = (self.total_time + dt * self.clock_speed) 
+        self.time_of_day = self.total_time % (24 * 3600)
         
         if self.dynamic_spawn_rate:
             self.maybe_spawn_vehicle(dt)
@@ -75,7 +77,7 @@ class TrafficSimulation:
                     self.spawn_vehicle(1)
                 
                 if self.collect_data:
-                    self.collector.add_completed_route(self.time, vehicle)
+                    self.collector.add_completed_route(self.total_time, vehicle)
                 
             elif vehicle.destination_reached == -1: # did not reach dest (out of bouds)
                 del self.vehicles_by_id[vehicle.id]
@@ -87,7 +89,7 @@ class TrafficSimulation:
                     self.spawn_vehicle(1)
         
         if self.collect_data:
-            self.collector.log(self.time, self.vehicles)
+            self.collector.log(self.total_time, self.vehicles)
             
     def get_spawn_rate(self, t) -> float:
         times = sorted(self.spawn_rates.keys())
@@ -101,7 +103,7 @@ class TrafficSimulation:
         return self.spawn_rates[times[-1]]
     
     def maybe_spawn_vehicle(self, dt: float) -> None:
-        rate_per_hour = self.get_spawn_rate(self.time)
+        rate_per_hour = self.get_spawn_rate(self.time_of_day)
         p = rate_per_hour * dt / 3600.0
 
         if random.random() < p:

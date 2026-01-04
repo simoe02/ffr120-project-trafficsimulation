@@ -6,15 +6,6 @@ from driver_behavior.vehicle import Vehicle
 
 class DataCollector:
     def __init__(self) -> None:
-        self.time: list[float] = []
-        
-        self.avg_speed: list[float] = []
-        self.number_of_vehicles: list[int] = []
-        self.stopped_vehicles: list[int] = []
-        self.completed_routes: list[dict] = []
-        
-        self.avg_delay: list[float] = []
-        self.num_completed_routes: list[int] = []
         
         self.data: dict[str, list] = {
             "time": [], 
@@ -23,6 +14,8 @@ class DataCollector:
             "stopped": [],
             "completed_routes": []
         }
+        
+        self.completed_routes: list[dict] = []
         
     def get_avg_speed_and_stopped(self, vehicle_list: list[Vehicle]) -> tuple[float, int]:
         avg_speed = 0
@@ -57,20 +50,24 @@ class DataCollector:
         self.completed_routes.append(
             {
                 "time": time,
+                "est_route_time": vehicle.estimated_cost_to_dest,
+                "actual_route_time": vehicle.lifetime,
                 "delay": vehicle.lifetime - vehicle.estimated_cost_to_dest,
                 "route_replannings": vehicle.num_replannings
             }
         )
         
-    def save_to_csv(self) -> None:
+    def save_to_csv(self, filename: str | None = None) -> None:
         data_df = pd.DataFrame(self.data)
         
         routes_df = pd.DataFrame(self.completed_routes)
     
-        timestamp = datetime.now().strftime("%H%M%S")
+        if filename == None:
+            filename = datetime.now().strftime("%H%M%S")
 
-        os.mkdir(f"data/sim_data/{timestamp}")
+        if not os.path.isdir(f"data/sim_data/{filename}"):
+            os.mkdir(f"data/sim_data/{filename}")
 
-        data_df.to_csv(f"data/sim_data/{timestamp}/data.csv")
-        routes_df.to_csv(f"data/sim_data/{timestamp}/route_data.csv")
+        data_df.to_csv(f"data/sim_data/{filename}/data.csv")
+        routes_df.to_csv(f"data/sim_data/{filename}/route_data.csv")
         
