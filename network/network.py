@@ -12,7 +12,7 @@ class RoadNetwork:
     def __init__(self,
             closed_roads_frac: float = 0
         ) -> None:
-        # Lists if iterating over all. Maybe remove.
+        # Lists if iterating over all intersections. Maybe memory inefficient to store these as well but it will have to do.
         self.intersections: list[Intersection] = []
         self.roads: list[Road] = []
         

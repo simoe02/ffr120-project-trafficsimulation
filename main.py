@@ -1,20 +1,7 @@
 from network.network import RoadNetwork
 from driver_behavior.router import AstarRouter
 from simulation import TrafficSimulation
-# from visualizer import TrafficVisualizer
-
-
-# def run_with_visualisation(filename: str, num_vehicles: int, dt: float = 0.016) -> None:
-#     network = RoadNetwork()
-#     network.init_from_json(f"network/data_gpkg/{filename}.json")
-
-#     router = AstarRouter(network)
-#     simulation = TrafficSimulation(network, router)
-
-#     simulation.spawn_vehicle(num_vehicles)
-
-#     vis = TrafficVisualizer(simulation, dt)
-#     vis.run()
+from visualizer import TrafficVisualizer
     
 def run_simulation(
         network_filename: str, 
@@ -30,7 +17,7 @@ def run_simulation(
     print("        Initializing...")
     
     network = RoadNetwork(closed_roads_frac=closed_roads_frac)
-    network.init_from_json(f"network/data_gpkg/{network_filename}.json")
+    network.init_from_json(f"network/road_data/{network_filename}.json")
 
     router = AstarRouter(network)
     simulation = TrafficSimulation(network, router, collect_data=True, dynamic_spawn_rate=use_dynamic_spawning, clock_speed=clock_speed, saved_data_dirname=saved_data_dirname)
@@ -47,28 +34,33 @@ def run_simulation(
     
     simulation.collector.save_to_csv()
 
+def run_with_visualisation(filename: str, num_vehicles: int, dt: float = 0.01667, close_roads_frac: float = 0, use_dynamic_spawning: bool = True) -> None:
+    network = RoadNetwork()
+    network.init_from_json(f"network/road_data/{filename}.json")
+
+    router = AstarRouter(network)
+    simulation = TrafficSimulation(network, router, dynamic_spawn_rate=True)
+
+    simulation.spawn_vehicle(num_vehicles)
+
+    vis = TrafficVisualizer(simulation, dt)
+    vis.run()
 
 if __name__ == "__main__":
     NETWORK_FILENAME = "large"
-    N_START = 500
-    DELTA_TIME = 0.1
-    CLOCK_SPEED = 1 # seconds per seconds (to avoid simulating a whole 24*3600 seconds)
-    RUNS_PER_P = 1
-    TOTAL_TIME = 72 * 3600
+    N_START = 3000
     
-    # run_with_visualisation(NETWORK_FILENAME, N_START, dt=0.1)
+    # Run with visualization
+    DELTA_TIME = 0.01667 # 0.01667 s correspons to "real time" (since visualization run at 60 FPS)
+    run_with_visualisation(NETWORK_FILENAME, N_START, DELTA_TIME, close_roads_frac=0)
     
-    # percentages = [0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10]
-    percentages = [0.10]
     
-    for p in percentages:
-        
-        print(f"p = {p}")
-        
-        for i in range(RUNS_PER_P):
-            saved_data_filename = f"{p}_{i}_72h_real_time"
-            
-            print(f"   Run {i}:")
-        
-            run_simulation(NETWORK_FILENAME, N_START, DELTA_TIME, TOTAL_TIME, use_dynamic_spawning=True, closed_roads_frac=p, clock_speed=CLOCK_SPEED, saved_data_dirname=saved_data_filename)
+    # Run without sim: (For much faster runtime use pypy as interpreter)
+    
+    # data_dirname = "sim_data"
+    # p_close = 0
+    # DELTA_TIME = 1
+    # TOTAL_TIME = 72 * 3600
+
+    # run_simulation(NETWORK_FILENAME, N_START, DELTA_TIME, TOTAL_TIME, use_dynamic_spawning=True, closed_roads_frac=p_close, saved_data_dirname=data_dirname)
     

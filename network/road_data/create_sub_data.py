@@ -1,3 +1,5 @@
+# Code for picking a smaller rectangular window of the road network using lat/long coords
+
 import json
 from pyproj import Transformer
 
@@ -48,7 +50,7 @@ if __name__ == "__main__":
     xmin, ymin = latlong_to_sweref(latlong_min)
     xmax, ymax = latlong_to_sweref(latlong_max)
 
-    filename = "data_small"
+    new_filename = "data_small"
     
-    create_sub_data(filename, xmin, ymin, xmax, ymax)
+    create_sub_data(new_filename, xmin, ymin, xmax, ymax)
     

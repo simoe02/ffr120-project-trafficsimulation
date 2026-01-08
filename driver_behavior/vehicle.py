@@ -92,9 +92,9 @@ class Vehicle:
                 self.destination_reached = 1
                 return
             
-            if self.planned_route is not None: # To avoid type error (planned route will never be None here)
+            if self.planned_route is not None: # To avoid type checker error (planned route will never be None here)
                 
-                # "Fix" to a bug where the planned route was empty. But the bug doesnt seem to happen anymore.
+                # "Fix" to a bug where the planned route was empty. But the bug doesnt seem to happen anymore. Left it just in case.
                 if not self.planned_route.roads:
                     print("Weird bug")
                     self.destination_reached = -1
@@ -131,14 +131,14 @@ class Vehicle:
         # FVDM
         else:
             gap = max(0, distance - front_vehicle.length)
-            min_gap = 2
-            # d_gap = 5
+            min_gap = 2 # Maybe use lower
     
             dv = self.speed - front_vehicle.speed
 
             opt_speed = max(0, min(v_desired, (gap-min_gap)/self.time_headway))
             
-            # Smoother aternative but a bit too smooth
+            # Smoother aternative to opt speed but a bit too smooth
+            # d_gap = 5
             # opt_speed = 0.5 * v_desired * (math.tanh((gap - min_gap) / d_gap) + 1.0)
 
             interaction = max(1.0, gap / (v_desired * self.time_headway))

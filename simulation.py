@@ -9,6 +9,9 @@ from data_analysis.data_collector import DataCollector
 
 
 class TrafficSimulation:
+    """
+    Class for handling the simulation.
+    """
     def __init__(self, 
             network: RoadNetwork, 
             router: Router, 
@@ -22,7 +25,7 @@ class TrafficSimulation:
         self.router: Router = router
         self.total_time: float = 0 # Time in simulation
         self.time_of_day: float = 0
-        self.clock_speed: float = clock_speed
+        self.clock_speed: float = clock_speed # How many "seconds per second". Choose higher than 1 a day will be shorter in seconds but still 24h.
         
         self.vehicles: list[Vehicle] = []
         self.vehicles_by_id: dict[int, Vehicle] = {}
@@ -36,7 +39,7 @@ class TrafficSimulation:
         
         self.dynamic_spawn_rate: bool = dynamic_spawn_rate
         
-        # Spawn rate per hour during the whole day {second: veh/hour}
+        # Spawn rate per hour during the whole day {second: vehicles/hour}.
         self.spawn_rates = {
             0*3600:   2000,
             3*3600:   3500,
@@ -58,7 +61,7 @@ class TrafficSimulation:
         
     def step(self, dt: float) -> None:
         """
-        One simulation step
+        One simulation step.
         """
         self.total_time = (self.total_time + dt * self.clock_speed) 
         self.time_of_day = self.total_time % (24 * 3600)
@@ -93,6 +96,9 @@ class TrafficSimulation:
             self.collector.log(self.total_time, self.vehicles)
             
     def get_spawn_rate(self, t) -> float:
+        """
+        Calculates the spawn rate depending on time of day via linear interpolation of the discrete spawn rates.
+        """
         times = sorted(self.spawn_rates.keys())
         for i in range(len(times) - 1):
             
@@ -104,6 +110,9 @@ class TrafficSimulation:
         return self.spawn_rates[times[-1]]
     
     def maybe_spawn_vehicle(self, dt: float) -> None:
+        """
+        Decide whether or not to spawn vehicle.
+        """
         rate_per_hour = self.get_spawn_rate(self.time_of_day)
         p = rate_per_hour * dt / 3600.0
 

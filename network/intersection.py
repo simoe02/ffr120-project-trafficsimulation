@@ -9,6 +9,5 @@ class Intersection:
     x: float
     y: float
     
-    # Not used
-    traffic_light: bool = False # Determines time at intersection
+    traffic_light: bool = False # Determines time at intersection. Not used yet.
     

@@ -18,7 +18,7 @@ QtWidgets.QApplication.setAttribute(
 
 class TrafficVisualizer:
     """
-    Class for visualizing the simulation using GPU-accelerated graphics with pyqtgraph. 
+    Class for visualizing the simulation using GPU-accelerated graphics with pyqtgraph. Requires installation of pyqtgraph.
     """
     def __init__(self, simulation: TrafficSimulation, dt: float) -> None:
         self.simulation = simulation

@@ -5,6 +5,9 @@ import os
 from driver_behavior.vehicle import Vehicle
 
 class DataCollector:
+    """
+    Class for collecting data during simulation and store in two seperate .csv files, one containg data each time step and one with data on every completed route.
+    """
     def __init__(self, dirname: str | None = None) -> None:
         
         self.dirname = dirname
@@ -48,6 +51,7 @@ class DataCollector:
         self.data["stopped"].append(stopped_vehicles)
         self.data["completed_routes"].append(len(self.completed_routes))
         
+        # Save every 100000 steps to keep the simulation from eating up RAM
         if len(self.data["time"]) > 100000:
             self.save_to_csv()
     
@@ -63,6 +67,9 @@ class DataCollector:
         )
         
     def save_to_csv(self) -> None:
+        """
+        Saves currently stored data to csv and frees up space.
+        """
         data_df = pd.DataFrame(self.data)
         routes_df = pd.DataFrame(self.completed_routes)
 

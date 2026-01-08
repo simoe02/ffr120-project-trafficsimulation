@@ -3,7 +3,9 @@
 import geopandas as gpd
 import json
 
-gdf = gpd.read_file("network/data_gpkg/data.gpkg", layer="NVDB_DK_O_88_Vagtrafiknat")
+FILE_PATH = "network/data_gpkg/data.gpkg"
+
+gdf = gpd.read_file(FILE_PATH, layer="NVDB_DK_O_88_Vagtrafiknat")
 car_network_gpf = gdf[gdf.Nattyp == "bilnät"]
 
 print(car_network_gpf)
