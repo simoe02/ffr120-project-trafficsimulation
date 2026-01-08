@@ -13,13 +13,14 @@ plt.rcParams.update({
     "legend.fontsize": 8
 })
 
-include = ["0_0_72h_real_time", "3_0_72h_real_time"]
+include = ["0_0_72h_real_time", "1_0_72h_real_time", "3_0_72h_real_time", "5_0_72h_real_time", "7_0_72h_real_time", "0.1_0_72h_real_time"]
+labels = [r"0\%", r"1\%", r"3\%", r"5\%", r"7\%", r"10\%"]
 
-fig = plt.figure(figsize=(3.4, 3))
+fig = plt.figure(figsize=(3.4, 2.2))
 
-t_hours = [1800*i for i in range(72*2)]
+t_hours = [900*i for i in range(72*4)]
 
-for filename in include:
+for filename, l in zip(include, labels):
     
     route_data_df = pd.read_csv(f"data/sim_data/{filename}/route_data.csv")
     route_data_df["departure"] = route_data_df["time"] - route_data_df["actual_route_time"]
@@ -40,19 +41,20 @@ for filename in include:
     delay_avgs = np.array(delay_avgs) / 60
     delay_stds = np.array(delay_stds) / 60
     num_departed = np.array(num_departed)
-    t_hours_for_plot = np.array(t_hours)[:-1] / 3600 - 47.5
+    t_hours_for_plot = np.array(t_hours)[:-1] / 3600 - 24
 
-    plt.plot(t_hours_for_plot[48*2:], delay_avgs[48*2:], label=fr"{filename[0]}\%", linewidth=1)
+    plt.plot(t_hours_for_plot[24*4:48*4+1], delay_avgs[24*4:48*4+1], label=l, linewidth=1)
     
 xticks = [i*4 for i in range(7)]
 xtick_labels = [f"{t}:00" for t in xticks]
 plt.xticks(xticks, labels=xtick_labels)
 
-plt.title("Average delay every hour")
+# plt.title("Average delay over a day")
 plt.ylabel("Delay (min)")
 plt.xlabel("Time of day")
-plt.legend()
+plt.legend(title=r"$p$", bbox_to_anchor=(1, 1))
 plt.grid()
 
 plt.tight_layout()
+plt.savefig("data/images/report/delay22.pdf")
 plt.show()

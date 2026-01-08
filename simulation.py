@@ -14,7 +14,8 @@ class TrafficSimulation:
             router: Router, 
             collect_data: bool = False, 
             dynamic_spawn_rate: bool = False, 
-            clock_speed: float = 1
+            clock_speed: float = 1,
+            saved_data_dirname: str | None = None
         ) -> None:
         
         self.network: RoadNetwork = network
@@ -29,7 +30,7 @@ class TrafficSimulation:
         
         self.collect_data = collect_data
         if self.collect_data:
-            self.collector = DataCollector()
+            self.collector = DataCollector(dirname=saved_data_dirname)
             
         self.num_out_of_bounds = 0
         

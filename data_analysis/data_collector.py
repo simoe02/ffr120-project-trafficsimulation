@@ -5,7 +5,9 @@ import os
 from driver_behavior.vehicle import Vehicle
 
 class DataCollector:
-    def __init__(self) -> None:
+    def __init__(self, dirname: str | None = None) -> None:
+        
+        self.dirname = dirname
         
         self.data: dict[str, list] = {
             "time": [], 
@@ -17,6 +19,12 @@ class DataCollector:
         
         self.completed_routes: list[dict] = []
         
+        if dirname == None:
+            self.dirname = datetime.now().strftime("%H%M%S")
+
+        if not os.path.isdir(f"data/sim_data/{dirname}"):
+            os.mkdir(f"data/sim_data/{dirname}")
+            
     def get_avg_speed_and_stopped(self, vehicle_list: list[Vehicle]) -> tuple[float, int]:
         avg_speed = 0
         stopped_vehicles = 0
@@ -39,12 +47,9 @@ class DataCollector:
         self.data["avg_speed"].append(avg_speed)
         self.data["stopped"].append(stopped_vehicles)
         self.data["completed_routes"].append(len(self.completed_routes))
-            
-        # self.time.append(time)
-        # self.stopped_vehicles.append(stopped_vehicles)
-        # self.avg_speed.append(avg_speed)
-        # self.number_of_vehicles.append(len(vehicles))
-        # self.num_completed_routes.append(len(self.completed_routes))
+        
+        if len(self.data["time"]) > 100000:
+            self.save_to_csv()
     
     def add_completed_route(self, time: float, vehicle: Vehicle) -> None:
         self.completed_routes.append(
@@ -57,17 +62,22 @@ class DataCollector:
             }
         )
         
-    def save_to_csv(self, filename: str | None = None) -> None:
+    def save_to_csv(self) -> None:
         data_df = pd.DataFrame(self.data)
-        
         routes_df = pd.DataFrame(self.completed_routes)
-    
-        if filename == None:
-            filename = datetime.now().strftime("%H%M%S")
 
-        if not os.path.isdir(f"data/sim_data/{filename}"):
-            os.mkdir(f"data/sim_data/{filename}")
+        data_csv_path = f"data/sim_data/{self.dirname}/data.csv"
+        route_csv_path = f"data/sim_data/{self.dirname}/route_data.csv"
 
-        data_df.to_csv(f"data/sim_data/{filename}/data.csv")
-        routes_df.to_csv(f"data/sim_data/{filename}/route_data.csv")
+        data_df.to_csv(data_csv_path, mode="a", header=not os.path.exists(data_csv_path))
+        routes_df.to_csv(route_csv_path, mode="a", header=not os.path.exists(route_csv_path))
         
+        self.data: dict[str, list] = {
+            "time": [], 
+            "num_vehicles": [],
+            "avg_speed": [],
+            "stopped": [],
+            "completed_routes": []
+        }
+        
+        self.completed_routes: list[dict] = []

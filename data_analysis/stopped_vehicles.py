@@ -13,7 +13,7 @@ plt.rcParams.update({
     "legend.fontsize": 8
 })
 
-include = ["0_0_72h_real_time", "3_0_72h_real_time"]
+include = ["0_0_72h_real_time", "1_0_72h_real_time", "3_0_72h_real_time", "7_0_72h_real_time"]
 
 fig = plt.figure(figsize=(3.4, 3))
 
@@ -33,10 +33,11 @@ xtick_labels = [f"{t}:00" for t in xticks]
 plt.xticks(xticks, labels=xtick_labels)
 
 plt.title("Stopped vehicles")
-plt.ylabel("Numeber of vehicles")
+plt.ylabel("Number of vehicles")
 plt.xlabel("Time of day")
 plt.legend()
 plt.grid()
 
 plt.tight_layout()
+plt.savefig("data/images/report/stopped_vehicles.pdf")
 plt.show()

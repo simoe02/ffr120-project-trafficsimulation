@@ -58,7 +58,7 @@ class Vehicle:
         # Driver attributes via a random agression parameter
         self.aggression = random.betavariate(2.5, 2.5)
         
-        self.speed_limit_compiance = 0.85 + 0.3 * self.aggression
+        self.speed_limit_compliance = 0.85 + 0.3 * self.aggression
         self.acc_max = 1 + 3 * self.aggression
         self.brake_max = 3 + 4.0 * self.aggression
         self.time_headway = 3 - 2 * self.aggression # Time between vehicle in front
@@ -120,7 +120,7 @@ class Vehicle:
         """
         front_vehicle, distance = self.vehicle_in_front()
         
-        v_desired = self.current_road.speed_limit * self.speed_limit_compiance
+        v_desired = self.current_road.speed_limit * self.speed_limit_compliance
         
         if front_vehicle == None:
             self.speed += self.acc_max * dt
