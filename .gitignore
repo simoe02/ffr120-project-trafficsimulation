@@ -1,10 +1,14 @@
-# Python virtual environments named .venv_xxxx
-.venv_*/
+# venv
+.venv*/
 
-# Python bytecode caches
+# Caches
 __pycache__/
+.DS_Store
 
 # test file
 test.py
 
-.DS_Store
+
+# images
+images
+*.png

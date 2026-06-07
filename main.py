@@ -1,7 +1,6 @@
 from network.network import RoadNetwork
 from driver_behavior.router import AstarRouter
 from simulation import TrafficSimulation
-from visualizer import TrafficVisualizer
     
 def run_simulation(
         network_filename: str, 
@@ -35,6 +34,8 @@ def run_simulation(
     simulation.collector.save_to_csv()
 
 def run_with_visualisation(filename: str, num_vehicles: int, dt: float = 0.01667, close_roads_frac: float = 0, use_dynamic_spawning: bool = True) -> None:
+    from visualizer import TrafficVisualizer
+    
     network = RoadNetwork()
     network.init_from_json(f"network/road_data/{filename}.json")
 
